@@ -3,4 +3,5 @@ project(NJU_CS_Graph_Theory)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(NJU_CS_Graph_Theory BipartiteGraphMatching.cpp)
+add_executable(Hungarian Hungarian.cpp)
+add_executable(Hopcroft_Carp Hopcroft_Carp.cpp)

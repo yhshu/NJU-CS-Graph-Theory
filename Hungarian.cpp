@@ -1,3 +1,8 @@
+//
+// Created by Yiheng Shu on 2021/4/2.
+//
+
+
 #pragma GCC optimize ("O2")
 #include <iostream>
 #include <vector>
@@ -43,6 +48,9 @@ int main() {
       vis[j] = false;
     }
     ans += dfs(i);
+
+    if (ans == min(size1, size2))
+      break;
   }
 
   // output
@@ -52,7 +60,7 @@ int main() {
 
 int dfs(int i) {
   for (int j = 0; j < size2; j++) {
-    if (adj_list.at(i).find(j) != adj_list.at(i).end() && !vis[j]) {
+    if (!vis[j] && adj_list.at(i).find(j) != adj_list.at(i).end()) {
       vis[j] = true;
       if (partner.at(j) == -1 || dfs(partner.at(j)) != 0) {
         partner.at(j) = i;
