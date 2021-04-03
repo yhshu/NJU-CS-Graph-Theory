@@ -23,16 +23,6 @@ int dis1[maxn];
 int dis2[maxn];
 int dis;
 
-bool connected(int i, int j) {
-  if (adj_list[i].empty())
-    return false;
-  for (int node : adj_list[i]) {
-    if (node == j)
-      return true;
-  }
-  return false;
-}
-
 bool search() {
   queue<int> que;
   dis = inf;
