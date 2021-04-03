@@ -2,7 +2,6 @@
 // Created by Yiheng Shu on 2021/4/3.
 //
 
-
 #pragma GCC optimize ("O2")
 
 #include <iostream>
@@ -17,12 +16,22 @@ using namespace std;
 int ans = 0;
 int size1, size2;
 bool vis[maxn];
-unordered_set<int> adj_list[maxn];
+vector<int> adj_list[maxn];
 int match1[maxn];
 int match2[maxn];
 int dis1[maxn];
 int dis2[maxn];
 int dis;
+
+bool connected(int i, int j) {
+  if (adj_list[i].empty())
+    return false;
+  for (int node : adj_list[i]) {
+    if (node == j)
+      return true;
+  }
+  return false;
+}
 
 bool search() {
   queue<int> que;
@@ -41,8 +50,8 @@ bool search() {
 
     if (dis1[front] > dis)
       break;
-    for (int j = 0; j < size2; j++) {
-      if (dis2[j] == -1 && adj_list[front].find(j) != adj_list[front].end()) {
+    for (int j : adj_list[front]) {
+      if (dis2[j] == -1) {
         dis2[j] = dis1[front] + 1;
         if (match2[j] == -1) {
           dis = dis2[j];
@@ -57,8 +66,8 @@ bool search() {
 }
 
 int dfs(int i) {
-  for (int j = 0; j < size2; j++) {
-    if (!vis[j] && adj_list[i].find(j) != adj_list[i].end() && dis2[j] == dis1[i] + 1) {
+  for (int j : adj_list[i]) {
+    if (!vis[j] && dis2[j] == dis1[i] + 1) {
       vis[j] = true;
       if (match2[j] != -1 && dis2[j] == dis)
         continue;
@@ -73,7 +82,6 @@ int dfs(int i) {
 }
 
 int main() {
-
   std::ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
@@ -86,7 +94,7 @@ int main() {
     for (int j = 0; j < degree; j++) {
       int node;
       cin >> node;
-      adj_list[i].insert(node - 1);
+      adj_list[i].push_back(node - 1);
     }
   }
 
