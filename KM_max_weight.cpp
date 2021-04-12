@@ -2,9 +2,7 @@
 
 #include <vector>
 #include <iostream>
-#include <queue>
 #include <utility>
-#include <cstring>
 #include <algorithm>
 #include <map>
 
@@ -14,72 +12,79 @@ using namespace std;
 
 int size1, size2;
 int match[maxn];
-bool vis1[maxn];
-bool vis2[maxn];
+bool vis[maxn];
 long long l1[maxn];
 long long l2[maxn];
 vector<pair<int, long long>> g[maxn];
-map<pair<int, int>, long long> weight;
-long long slack;
 long long inf = 0x3f3f3f3f;
 long long ans = 0;
+long long c[maxn];
+int p[maxn];
 
 void addEdge(int u, int v, long long w) {
   g[u].emplace_back(v, max(w, 0ll));
 }
 
 long long get_w(int i, int j) {
-  for (auto p : g[i]) {
-    if (p.first == j) {
-      return p.second;
+  for (auto pair : g[i]) {
+    if (pair.first == j) {
+      return pair.second;
     }
   }
   return 0;
 }
 
-bool dfs(int i) {
-  vis1[i] = true;
-  for (int j = 0; j < size2; j++) {
-    if (vis2[j]) continue;
-    auto t = l1[i] + l2[j] - get_w(i, j);
-    if (!t) {
-      vis2[j] = true;
-      if (match[j] == -1 || dfs(match[j])) {
-        match[j] = i;
-        return true;
-      }
-    } else if (slack > t) slack = t;
+void bfs(int u) {
+  int a, v = 0, vl = 0;
+  long long d;
+  for (int i = 0; i < size1; i++) {
+    p[i] = 0;
+    c[i] = inf;
   }
-  return false;
+  match[v] = u;
+  do {
+    a = match[v];
+    d = inf;
+    vis[v] = true;
+
+    for (int b = 0; b < size2; b++)
+      if (!vis[b]) {
+        if (c[b] > l1[a] + l2[b] - get_w(a, b)) {
+          c[b] = l1[a] + l2[b] - get_w(a, b);
+          p[b] = v;
+        }
+        if (c[b] < d) {
+          d = c[b];
+          vl = b;
+        }
+      }
+    for (int b = 0; b < size2; b++)
+      if (vis[b]) {
+        l1[match[b]] -= d;
+        l2[b] += d;
+      } else {
+        c[b] -= d;
+      }
+    v = vl;
+  } while (match[v]);
+
+  while (v) {
+    match[v] = match[p[v]];
+    v = p[v];
+  }
 }
 
 void solve() {
-  memset(match, -1, sizeof(match));
-  memset(l2, 0, sizeof(l2));
-
   for (int i = 0; i < size1; i++) {
-    l1[i] = -inf;
-    for (auto p : g[i]) {
-      l1[i] = max(l1[i], p.second);
-    }
+    match[i] = 0;
+    l1[i] = l2[i] = 0;
   }
-
-  for (int k = 0; k < size1; k++) {
-    while (true) {
-      slack = inf;
-      memset(vis1, false, sizeof(vis1));
-      memset(vis2, false, sizeof(vis2));
-      if (dfs(k)) break;
-      for (int i = 0; i < size1; i++)
-        if (vis1[i]) l1[i] -= slack;
-      for (int j = 0; j < size2; j++)
-        if (vis2[j]) l2[j] += slack;
-    }
+  for (int i = 0; i < size1; i++) {
+    for (int j = 0; j < size2; j++) vis[j] = false;
+    bfs(i);
   }
-
-  for (int j = 0; j < size2; j++) {
+  for (int j = 0; j < size2; j++)
     ans += get_w(match[j], j);
-  }
 }
 
 int main() {
