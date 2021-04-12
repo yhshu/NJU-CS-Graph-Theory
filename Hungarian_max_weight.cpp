@@ -6,6 +6,7 @@
 #include <utility>
 #include <cstring>
 #include <algorithm>
+
 using namespace std;
 
 #define maxn (100000 + 5)
@@ -42,10 +43,13 @@ bool check(int v) {
   return true;
 }
 
+void clear(queue<int> &q) {
+  queue<int> empty;
+  swap(empty, q);
+}
+
 void bfs(int i) {
-  while (!que.empty()) {
-    que.pop();
-  }
+  clear(que);
   que.push(i);
   vis1[i] = true;
 
@@ -104,14 +108,14 @@ void solve() {
     match2[i] = -1;
   }
 
-  for (int i = 0; i < n; i++) {
+  for (int i = 0; i < size1; i++) {
     for (auto p : g[i]) {
       auto w = p.second;
       l1[i] = max(l1[i], w);
     }
   }
 
-  for (int i = 0; i < n; i++) {
+  for (int i = 0; i < size1; i++) {
     memset(vis1, false, sizeof(vis1));
     memset(vis2, false, sizeof(vis2));
     bfs(i);
@@ -135,7 +139,6 @@ int main() {
   cin.tie(nullptr);
 
   cin >> size1 >> size2;
-  n = max(size1, size2);
 
   int v, degree;
   long long w;
