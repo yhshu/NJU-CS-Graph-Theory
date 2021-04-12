@@ -19,34 +19,34 @@ bool vis[maxn];
 vector<int> adj_list[maxn];
 int match1[maxn];
 int match2[maxn];
-int dis1[maxn];
-int dis2[maxn];
+int l1[maxn];
+int l2[maxn];
 int dis;
 
 bool search() {
   queue<int> que;
   dis = inf;
-  memset(dis1, -1, sizeof(dis1));
-  memset(dis2, -1, sizeof(dis2));
+  memset(l1, -1, sizeof(l1));
+  memset(l2, -1, sizeof(l2));
   for (int i = 0; i < size1; i++) {
     if (match1[i] == -1) {
       que.push(i);
-      dis1[i] = 0;
+      l1[i] = 0;
     }
   }
   while (!que.empty()) {
     int front = que.front();
     que.pop();
 
-    if (dis1[front] > dis)
+    if (l1[front] > dis)
       break;
     for (int j : adj_list[front]) {
-      if (dis2[j] == -1) {
-        dis2[j] = dis1[front] + 1;
+      if (l2[j] == -1) {
+        l2[j] = l1[front] + 1;
         if (match2[j] == -1) {
-          dis = dis2[j];
+          dis = l2[j];
         } else {
-          dis1[match2[j]] = dis2[j] + 1;
+          l1[match2[j]] = l2[j] + 1;
           que.push(match2[j]);
         }
       }
@@ -57,9 +57,9 @@ bool search() {
 
 int dfs(int i) {
   for (int j : adj_list[i]) {
-    if (!vis[j] && dis2[j] == dis1[i] + 1) {
+    if (!vis[j] && l2[j] == l1[i] + 1) {
       vis[j] = true;
-      if (match2[j] != -1 && dis2[j] == dis)
+      if (match2[j] != -1 && l2[j] == dis)
         continue;
       if (match2[j] == -1 || dfs(match2[j])) {
         match2[j] = i;
