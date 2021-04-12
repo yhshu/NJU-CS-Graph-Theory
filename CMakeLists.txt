@@ -5,4 +5,4 @@ set(CMAKE_CXX_STANDARD 11)
 
 add_executable(Hungarian Hungarian.cpp)
 add_executable(Hopcroft_Karp Hopcroft_Karp.cpp)
-add_executable(Hopcroft_Karp_max_weight Hungarian_max_weight.cpp)
+add_executable(Hopcroft_Karp_max_weight KM_max_weight.cpp)
